@@ -1,18 +1,19 @@
 // helper functions
 
 const validateUserRules = (tag, validation) => {
-  return validation.filter(val => {
-    const { text } = tag;
-    // if the rule is a string, we convert it to RegExp
-    if (typeof val.rule === 'string') return !new RegExp(val.rule).test(text);
+  return validation
+    .filter(val => {
+      const { text } = tag;
+      // if the rule is a string, we convert it to RegExp
+      if (typeof val.rule === "string") return !new RegExp(val.rule).test(text);
 
-    if (val.rule instanceof RegExp) return !val.rule.test(text);
+      if (val.rule instanceof RegExp) return !val.rule.test(text);
 
-    // if we deal with a function, invoke it
-    const isFunction = {}.toString.call(val.rule) === '[object Function]';
-    if (isFunction) return val.rule(tag);
-
-  }).map(val => val.classes);
+      // if we deal with a function, invoke it
+      const isFunction = {}.toString.call(val.rule) === "[object Function]";
+      if (isFunction) return val.rule(tag);
+    })
+    .map(val => val.classes);
 };
 
 const clone = node => JSON.parse(JSON.stringify(node));
@@ -39,14 +40,15 @@ const createClasses = (tag, tags, validation = [], customDuplicateFn) => {
   const inputTag = index !== -1 ? tagsDiff.splice(index, 1)[0] : clone(tag);
 
   // check whether the tag is a duplicate or not
-  const duplicate = customDuplicateFn ? customDuplicateFn(tagsDiff, inputTag) :
-    tagsDiff.map(t => t.text).indexOf(inputTag.text) !== -1;
+  const duplicate = customDuplicateFn
+    ? customDuplicateFn(tagsDiff, inputTag)
+    : tagsDiff.map(t => t.text).indexOf(inputTag.text) !== -1;
 
   // if it's a duplicate, push the class duplicate to the array
-  if (duplicate) classes.push('ti-duplicate');
+  if (duplicate) classes.push("ti-duplicate");
 
   // if we find no classes, the tag is valid → push the class valid
-  classes.length === 0 ? classes.push('ti-valid') : classes.push('ti-invalid');
+  classes.length === 0 ? classes.push("ti-valid") : classes.push("ti-invalid");
   return classes;
 };
 
@@ -79,6 +81,7 @@ const createTag = (tag, ...rest) => {
  * @example  &#47;* Example to call the function *&#47;
    const validatedTags = createTags(['tag1Text', 'tag2Text'], [{ type: 'length', rule: /[0-9]/ }])
  */
-const createTags = (tags, ...rest) => tags.map(t => createTag(t, tags, ...rest));
+const createTags = (tags, ...rest) =>
+  tags.map(t => createTag(t, tags, ...rest));
 
 export { createClasses, createTag, createTags, clone };

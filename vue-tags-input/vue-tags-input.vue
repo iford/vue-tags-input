@@ -6,9 +6,12 @@
 <template>
   <div
     class="vue-tags-input"
-    :class="[{ 'ti-disabled': disabled }, { 'ti-focus': focused }, $attrs.class]"
-    :style="$attrs.style"
-  >
+    :class="[
+      { 'ti-disabled': disabled },
+      { 'ti-focus': focused },
+      $attrs.class,
+    ]"
+    :style="$attrs.style">
     <div class="ti-input">
       <ul v-if="tagsCopy" class="ti-tags">
         <li
@@ -19,17 +22,13 @@
             { 'ti-editing': tagsEditStatus[index] },
             tag.tiClasses,
             tag.classes,
-            { 'ti-deletion-mark': isMarked(index) }
+            { 'ti-deletion-mark': isMarked(index) },
           ]"
           tabindex="0"
           class="ti-tag"
-          @click="$emit('tag-clicked', { tag, index })"
-        >
+          @click="$emit('tag-clicked', { tag, index })">
           <div class="ti-content">
-            <div
-              v-if="$slots['tag-left']"
-              class="ti-tag-left"
-            >
+            <div v-if="$slots['tag-left']" class="ti-tag-left">
               <slot
                 name="tag-left"
                 :tag="tag"
@@ -39,15 +38,16 @@
                 :perform-delete="performDeleteTag"
                 :perform-cancel-edit="cancelEdit"
                 :perform-open-edit="performEditTag"
-                :deletion-mark="isMarked(index)"
-              />
+                :deletion-mark="isMarked(index)" />
             </div>
             <div :ref="setTagCenter" class="ti-tag-center">
               <span
                 v-if="!$slots['tag-center']"
                 :class="{ 'ti-hidden': tagsEditStatus[index] }"
+                style="white-space: pre"
                 @click="performEditTag(index)"
-              >{{ tag.text }}</span>
+                >{{ tag.text }}</span
+              >
               <tag-input
                 v-if="!$slots['tag-center']"
                 :scope="{
@@ -58,8 +58,7 @@
                   validateTag: createChangedTag,
                   performCancelEdit: cancelEdit,
                   performSaveEdit: performSaveTag,
-                }"
-              />
+                }" />
               <slot
                 name="tag-center"
                 :tag="tag"
@@ -71,13 +70,9 @@
                 :perform-cancel-edit="cancelEdit"
                 :validate-tag="createChangedTag"
                 :perform-open-edit="performEditTag"
-                :deletion-mark="isMarked(index)"
-              />
+                :deletion-mark="isMarked(index)" />
             </div>
-            <div
-              v-if="$slots['tag-right']"
-              class="ti-tag-right"
-            >
+            <div v-if="$slots['tag-right']" class="ti-tag-right">
               <slot
                 name="tag-right"
                 :tag="tag"
@@ -87,8 +82,7 @@
                 :perform-delete="performDeleteTag"
                 :perform-cancel-edit="cancelEdit"
                 :perform-open-edit="performEditTag"
-                :deletion-mark="isMarked(index)"
-              />
+                :deletion-mark="isMarked(index)" />
             </div>
           </div>
           <div class="ti-actions">
@@ -97,14 +91,12 @@
               v-if="!$slots['tag-actions']"
               v-show="tagsEditStatus[index]"
               class="ti-icon-undo"
-              @click="cancelEdit(index)"
-            />
+              @click="cancelEdit(index)" />
             <i
               v-if="!$slots['tag-actions']"
               v-show="!tagsEditStatus[index]"
               class="ti-icon-close"
-              @click="performDeleteTag(index)"
-            />
+              @click="performDeleteTag(index)" />
             <slot
               v-if="$slots['tag-actions']"
               name="tag-actions"
@@ -115,8 +107,7 @@
               :perform-delete="performDeleteTag"
               :perform-cancel-edit="cancelEdit"
               :perform-open-edit="performEditTag"
-              :deletion-mark="isMarked(index)"
-            />
+              :deletion-mark="isMarked(index)" />
           </div>
         </li>
         <li class="ti-new-tag-input-wrapper">
@@ -131,9 +122,12 @@
             type="text"
             size="1"
             class="ti-new-tag-input"
-            @keydown="performAddTags(
-              filteredAutocompleteItems[selectedItem] || newTag, $event
-            )"
+            @keydown="
+              performAddTags(
+                filteredAutocompleteItems[selectedItem] || newTag,
+                $event
+              )
+            "
             @paste="addTagsFromPaste"
             @keydown.delete="invokeDelete"
             @keydown.tab="performBlur"
@@ -141,8 +135,7 @@
             @keydown.down="selectItem($event, 'after')"
             @input="updateNewTag"
             @focus="focused = true"
-            @click="addOnlyFromAutocomplete ? false : selectedItem = null"
-          >
+            @click="addOnlyFromAutocomplete ? false : (selectedItem = null)" />
         </li>
       </ul>
     </div>
@@ -150,8 +143,7 @@
     <div
       v-if="autocompleteOpen"
       class="ti-autocomplete"
-      @mouseout="selectedItem = null"
-    >
+      @mouseout="selectedItem = null">
       <slot name="autocomplete-header" />
       <ul>
         <li
@@ -161,15 +153,13 @@
           :class="[
             item.tiClasses,
             item.classes,
-            { 'ti-selected-item': isSelected(index) }
+            { 'ti-selected-item': isSelected(index) },
           ]"
           class="ti-item"
-          @mouseover="disabled ? false : selectedItem = index"
-        >
+          @mouseover="disabled ? false : (selectedItem = index)">
           <div
             v-if="!$slots['autocomplete-item']"
-            @click="performAddTags(item, undefined, 'autocomplete')"
-          >
+            @click="performAddTags(item, undefined, 'autocomplete')">
             {{ item.text }}
           </div>
           <slot
@@ -177,9 +167,10 @@
             name="autocomplete-item"
             :item="item"
             :index="index"
-            :perform-add="item => performAddTags(item, undefined, 'autocomplete')"
-            :selected="isSelected(index)"
-          />
+            :perform-add="
+              item => performAddTags(item, undefined, 'autocomplete')
+            "
+            :selected="isSelected(index)" />
         </li>
       </ul>
       <slot name="autocomplete-footer" />

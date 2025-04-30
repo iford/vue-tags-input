@@ -2,36 +2,32 @@
 
 A tags input component for Vue 3 with autocompletion, custom validation, templating and much more
 
-Forked from [@johmun/vue-tags-input](https://www.npmjs.com/package/@johmun/vue-tags-input), which you should use instead if your project is on Vue 2. 
+Forked from [@sipec/vue-tags-input](https://www.npmjs.com/package/@sipec/vue-tags-input), which you should use instead if your project is on Vue 2.
 
 [Demo & Docs](http://www.vue-tags-input.com) (for the original version)
 
 ## Features
 
-* No dependencies
-* Custom validation rules
-* Hooks: Before adding, Before deleting ...
-* Edit tags after creation
-* Fast setup
-* Works with Vuex
-* Small size: 34kb minified (css included) | gzipped 9kb
-* Autocompletion
-* Many customization options
-* Own templates
-* Delete tags on backspace
-* Add tags on paste
-* Examples & Docs
+- No dependencies
+- Custom validation rules
+- Hooks: Before adding, Before deleting ...
+- Edit tags after creation
+- Fast setup
+- Works with Vuex
+- Small size: 34kb minified (css included) | gzipped 9kb
+- Autocompletion
+- Many customization options
+- Own templates
+- Delete tags on backspace
+- Add tags on paste
+- Examples & Docs
 
 ## Install
 
 NPM
-```
-npm install @sipec/vue3-tags-input
-```
 
-CDN
 ```
-<script src="https://unpkg.com/@sipec/vue3-tags-input/dist/vue-tags-input.js"></script>
+npm install @iford/vue3-tags-input
 ```
 
 ## Usage
@@ -42,8 +38,7 @@ CDN
     <vue-tags-input
       v-model="tag"
       :tags="tags"
-      @tags-changed="newTags => tags = newTags"
-    />
+      @tags-changed="newTags => tags = newTags" />
   </div>
 </template>
 ```

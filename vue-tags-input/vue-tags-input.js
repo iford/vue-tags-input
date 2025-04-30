@@ -1,28 +1,28 @@
 // The file contains the main application logic
 // data, computed properties, methods, watchers and the component lifecycle
 
-import equal from 'fast-deep-equal';
+import equal from "fast-deep-equal";
 
-import { createTags, createTag, createClasses, clone } from './create-tags';
-import TagInput from './tag-input.vue';
-import props from './vue-tags-input.props';
+import { createTags, createTag, createClasses, clone } from "./create-tags";
+import TagInput from "./tag-input.vue";
+import props from "./vue-tags-input.props";
 
 export default {
-  name: 'VueTagsInput',
+  name: "VueTagsInput",
   components: { TagInput },
   props,
   emits: [
-    'adding-duplicate',
-    'before-adding-tag',
-    'before-deleting-tag',
-    'before-editing-tag',
-    'before-saving-tag',
-    'max-tags-reached',
-    'saving-duplicate',
-    'tags-changed',
-    'tag-clicked',
-    'update:modelValue',
-    'update:tags'
+    "adding-duplicate",
+    "before-adding-tag",
+    "before-deleting-tag",
+    "before-editing-tag",
+    "before-saving-tag",
+    "max-tags-reached",
+    "saving-duplicate",
+    "tags-changed",
+    "tag-clicked",
+    "update:modelValue",
+    "update:tags",
   ],
   inheritAttrs: false,
   data() {
@@ -41,10 +41,12 @@ export default {
     // Property which calculates if the autocomplete should be opened or not
     autocompleteOpen() {
       if (this.autocompleteAlwaysOpen) return true;
-      return this.newTag !== null
-        && this.newTag.length >= this.autocompleteMinLength
-        && this.filteredAutocompleteItems.length > 0
-        && this.focused;
+      return (
+        this.newTag !== null &&
+        this.newTag.length >= this.autocompleteMinLength &&
+        this.filteredAutocompleteItems.length > 0 &&
+        this.focused
+      );
     },
     // Returns validated autocomplete items. Maybe duplicates are filtered out
     filteredAutocompleteItems() {
@@ -65,12 +67,15 @@ export default {
       const lastItem = items.length - 1;
       if (items.length === 0) return;
       if (selectedItem === null) return 0;
-      if (method === 'before' && selectedItem === 0) return lastItem;
-      else if (method === 'after' && selectedItem === lastItem) return 0;
-      else return method === 'after' ? selectedItem + 1 : selectedItem - 1;
+      if (method === "before" && selectedItem === 0) return lastItem;
+      else if (method === "after" && selectedItem === lastItem) return 0;
+      else return method === "after" ? selectedItem + 1 : selectedItem - 1;
     },
     selectDefaultItem() {
-      if (this.addOnlyFromAutocomplete && this.filteredAutocompleteItems.length > 0) {
+      if (
+        this.addOnlyFromAutocomplete &&
+        this.filteredAutocompleteItems.length > 0
+      ) {
         this.selectedItem = 0;
       } else this.selectedItem = null;
     },
@@ -96,7 +101,10 @@ export default {
       if (!this.deleteOnBackspace || this.newTag.length > 0) return;
       const lastIndex = this.tagsCopy.length - 1;
       if (this.deletionMark === null) {
-        this.deletionMarkTime = setTimeout(() => this.deletionMark = null, 1000);
+        this.deletionMarkTime = setTimeout(
+          () => (this.deletionMark = null),
+          1000
+        );
         this.deletionMark = lastIndex;
       } else this.performDeleteTag(lastIndex);
     },
@@ -116,7 +124,7 @@ export default {
          The tag's index: 'index'. And a function: 'editTag'.
          If the function is invoked, the tag toggles to it's edit mode.
        */
-      this.$emit('before-editing-tag', {
+      this.$emit("before-editing-tag", {
         index,
         tag: this.tagsCopy[index],
         editTag: () => this.editTag(index),
@@ -142,24 +150,33 @@ export default {
       // yes, this sucks ...
       const tag = this.tagsCopy[index];
       tag.text = event ? event.target.value : this.tagsCopy[index].text;
-      this.tagsCopy[index] =
-        createTag(tag, this.tagsCopy, this.validation, this.isDuplicate);
+      this.tagsCopy[index] = createTag(
+        tag,
+        this.tagsCopy,
+        this.validation,
+        this.isDuplicate
+      );
     },
     // Focuses the input of a tag
     focus(index) {
       this.$nextTick(() => {
-        const el = this.tagCenter[index].querySelector('input.ti-tag-input');
+        const el = this.tagCenter[index].querySelector("input.ti-tag-input");
         if (el) el.focus();
       });
     },
     quote(regex) {
-      return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
+      return regex.replace(/([()[{*+.$^\\|?])/g, "\\$1");
     },
     // Cancels the edit mode for a tag → resets the tag to it's original model!
     cancelEdit(index) {
       if (!this.tags[index]) return;
       this.tagsCopy[index] = clone(
-        createTag(this.tags[index], this.tags, this.validation, this.isDuplicate)
+        createTag(
+          this.tags[index],
+          this.tags,
+          this.validation,
+          this.isDuplicate
+        )
       );
       this.tagsEditStatus[index] = false;
     },
@@ -172,7 +189,9 @@ export default {
     },
     // Creates multiple tags out of a string, based on the prop separators
     createTagTexts(string) {
-      const regex = new RegExp(this.separators.map(s => this.quote(s)).join('|'));
+      const regex = new RegExp(
+        this.separators.map(s => this.quote(s)).join("|")
+      );
       return string.split(regex).map(text => ({ text }));
     },
     // Method to call to delete a tag
@@ -185,7 +204,7 @@ export default {
        * @returns {Object} Contains the to editing tag: 'tag'. The tag's index: 'index'
          And a function: 'deleteTag'. If the function is invoked, the tag is deleted.
        */
-      this.$emit('before-deleting-tag', {
+      this.$emit("before-deleting-tag", {
         index,
         tag: this.tagsCopy[index],
         deleteTag: () => this.deleteTag(index),
@@ -200,7 +219,7 @@ export default {
       this.tagsCopy.splice(index, 1);
 
       // Special update for the parent if v-model:tags is on
-      this.$emit('update:tags', this.tagsCopy);
+      this.$emit("update:tags", this.tagsCopy);
 
       /**
        * @description Emits if the tags array changes
@@ -208,27 +227,29 @@ export default {
        * @property {events}
        * @returns {Array} The modified tags array
        */
-      this.$emit('tags-changed', this.tagsCopy);
+      this.$emit("tags-changed", this.tagsCopy);
     },
     // Decides wether the input keyCode is one, which is allowed to modify/add tags
     noTriggerKey(event, category) {
-      const triggerKey = this[category].indexOf(event.keyCode) !== -1
-        || this[category].indexOf(event.key) !== -1;
+      const triggerKey =
+        this[category].indexOf(event.keyCode) !== -1 ||
+        this[category].indexOf(event.key) !== -1;
       if (triggerKey) event.preventDefault();
       return !triggerKey;
     },
     // Method to call to add a tag
     performAddTags(tag, event, source) {
       // If the input is disabled or the function was invoked by no trigger key → stop
-      if (this.disabled || event && this.noTriggerKey(event, 'addOnKey')) return;
+      if (this.disabled || (event && this.noTriggerKey(event, "addOnKey")))
+        return;
 
       // Convert the string or object into a tags array
       let tags = [];
-      if (typeof tag === 'object') tags = [tag];
-      if (typeof tag === 'string') tags = this.createTagTexts(tag);
+      if (typeof tag === "object") tags = [tag];
+      if (typeof tag === "string") tags = this.createTagTexts(tag);
 
       // Filter out the tags with no content
-      tags = tags.filter(tag => tag.text.trim().length > 0);
+      tags = tags.filter(tag => tag.text.length > 0);
 
       // The basic checks are done → try to add all tags
       tags.forEach(tag => {
@@ -241,7 +262,7 @@ export default {
          * @returns {Object} Contains the to editing tag: 'tag'. And a function: 'addTag'.
            If the function is invoked, the tag is added.
          */
-        this.$emit('before-adding-tag', {
+        this.$emit("before-adding-tag", {
           tag,
           addTag: () => this.addTag(tag, source),
         });
@@ -252,17 +273,19 @@ export default {
         ? !this.isDuplicate(this.tagsCopy, tag)
         : !this.tagsCopy.find(t => t.text === tag.text);
     },
-    addTag(tag, source = 'new-tag-input') {
+    addTag(tag, source = "new-tag-input") {
       // Check if we should only add items from autocomplete and if so,
       // does the tag exists as an option
       const options = this.filteredAutocompleteItems.map(i => i.text);
-      if (this.addOnlyFromAutocomplete && options.indexOf(tag.text) === -1) return;
+      if (this.addOnlyFromAutocomplete && options.indexOf(tag.text) === -1)
+        return;
 
       // We use $nextTick here, because this.tagsCopy.length would be wrong if tags are added fast
       // like in a loop. With $nextTick we get the correct length value
       this.$nextTick(() => {
         // Maybe we should not add a tag because the maximum has reached already
-        const maximumReached = this.maxTags && this.maxTags <= this.tagsCopy.length;
+        const maximumReached =
+          this.maxTags && this.maxTags <= this.tagsCopy.length;
 
         /**
          * @description Emits if the maximum, the tags array is allowed to hold, is reached.
@@ -271,7 +294,7 @@ export default {
          * @property {events}
          * @returns {Object} The 'tag' which could not be added because of the length limitation.
          */
-        if (maximumReached) return this.$emit('max-tags-reached', tag);
+        if (maximumReached) return this.$emit("max-tags-reached", tag);
 
         // If we shouldn't add duplicates and that is one → stop
         const dup = this.avoidAddingDuplicates && !this.duplicateFilter(tag);
@@ -281,22 +304,22 @@ export default {
          * @name adding-duplicate
          * @property {events}
          */
-        if (dup) return this.$emit('adding-duplicate', tag);
+        if (dup) return this.$emit("adding-duplicate", tag);
 
         // If we find a rule which avoids that the tag is added → stop
         if (this.hasForbiddingAddRule(tag.tiClasses)) return;
 
         // Everything is okay → add the tag
-        this.newTag = ''
+        this.newTag = "";
         this.tagsCopy.push(tag);
 
         // Special update for the parent if v-model:tags is on
-        this.$emit('update:tags', this.tagsCopy);
+        this.$emit("update:tags", this.tagsCopy);
 
         // if the tag was added by autocomplete, focus the input
-        if (source === 'autocomplete') this.$refs.newTagInput.focus();
+        if (source === "autocomplete") this.$refs.newTagInput.focus();
 
-        this.$emit('tags-changed', this.tagsCopy);
+        this.$emit("tags-changed", this.tagsCopy);
       });
     },
     // Method to call to save a tag
@@ -304,13 +327,14 @@ export default {
       const tag = this.tagsCopy[index];
 
       // If the input is disabled or the function was invoked by no trigger key → stop
-      if (this.disabled || event && this.noTriggerKey(event, 'addOnKey')) return;
+      if (this.disabled || (event && this.noTriggerKey(event, "addOnKey")))
+        return;
 
       // If the tag has no content → stop
       if (tag.text.trim().length === 0) return;
 
       // The basic checks are done → try to save the tag
-      if (!this['on-before-saving-tag']) this.saveTag(index, tag);
+      if (!this["on-before-saving-tag"]) this.saveTag(index, tag);
       /**
        * @description Emits before a tag is saved
        * @name before-saving-tag
@@ -319,7 +343,7 @@ export default {
          The tag's index: 'index'. And a function: 'saveTag'.
          If the function is invoked, the tag is saved.
        */
-      this.$emit('before-saving-tag', {
+      this.$emit("before-saving-tag", {
         index,
         tag,
         saveTag: () => this.saveTag(index, tag),
@@ -330,9 +354,9 @@ export default {
       if (this.avoidAddingDuplicates) {
         const tagsDiff = clone(this.tagsCopy);
         const inputTag = tagsDiff.splice(index, 1)[0];
-        const dup = this.isDuplicate ?
-          this.isDuplicate(tagsDiff, inputTag) :
-          tagsDiff.map(t => t.text).indexOf(inputTag.text) !== -1;
+        const dup = this.isDuplicate
+          ? this.isDuplicate(tagsDiff, inputTag)
+          : tagsDiff.map(t => t.text).indexOf(inputTag.text) !== -1;
 
         /**
          * @description Emits if the user tries to save a duplicate in the tag's array
@@ -340,7 +364,7 @@ export default {
          * @name saving-duplicate
          * @property {events}
          */
-        if (dup) return this.$emit('saving-duplicate', tag);
+        if (dup) return this.$emit("saving-duplicate", tag);
       }
 
       // If we find a rule which avoids that the tag is added → stop
@@ -351,9 +375,9 @@ export default {
       this.toggleEditMode(index);
 
       // Special update for the parent if v-model:tags is on
-      this.$emit('update:tags', this.tagsCopy);
+      this.$emit("update:tags", this.tagsCopy);
 
-      this.$emit('tags-changed', this.tagsCopy);
+      this.$emit("tags-changed", this.tagsCopy);
     },
     tagsEqual() {
       return !this.tagsCopy.some((t, i) => !equal(t, this.tags[i]));
@@ -361,7 +385,7 @@ export default {
     updateNewTag(ievent) {
       const value = ievent.target.value;
       this.newTag = value;
-      this.$emit('update:modelValue', value);
+      this.$emit("update:modelValue", value);
     },
     initTags() {
       // We always work with a copy of the "real" tags, to easier edit them
@@ -373,12 +397,16 @@ export default {
       // We check if the original and the copied and validated tags are equal →
       // Update the parent if not and v-model:tags is on.
       if (!this.tagsEqual()) {
-        this.$emit('update:tags', this.tagsCopy);
+        this.$emit("update:tags", this.tagsCopy);
       }
     },
     blurredOnClick(e) {
       // if the click occurs on tagsinput → don't hide
-      if (this.$el.contains(e.target) || this.$el.contains(document.activeElement)) return;
+      if (
+        this.$el.contains(e.target) ||
+        this.$el.contains(document.activeElement)
+      )
+        return;
       this.performBlur(e);
     },
     performBlur() {
@@ -390,7 +418,7 @@ export default {
     },
   },
   watch: {
-    modelValue(newValue){
+    modelValue(newValue) {
       // If v-model change outside, update the newTag model
       if (!this.addOnlyFromAutocomplete) this.selectedItem = null;
       this.newTag = newValue;
@@ -402,7 +430,7 @@ export default {
       },
       deep: true,
     },
-    autocompleteOpen: 'selectDefaultItem',
+    autocompleteOpen: "selectDefaultItem",
   },
   created() {
     this.newTag = this.modelValue;
@@ -413,12 +441,12 @@ export default {
     this.selectDefaultItem();
 
     // We add a event listener to hide autocomplete on blur
-    document.addEventListener('click', this.blurredOnClick);
+    document.addEventListener("click", this.blurredOnClick);
   },
   beforeUpdate() {
     this.tagCenter = [];
   },
   unmounted() {
-    document.removeEventListener('click', this.blurredOnClick);
+    document.removeEventListener("click", this.blurredOnClick);
   },
 };
