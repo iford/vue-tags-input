@@ -17,9 +17,16 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/sipec/vue-tags-input.git"
+    "url": "https://github.com/iford/vue-tags-input.git"
   },
   "main": "dist/vue-tags-input.js",
+  "module": "dist/vue-tags-input.js",
+  "exports": {
+    ".": {
+      "import": "./dist/vue-tags-input.js",
+      "require": "./dist/vue-tags-input.js"
+    }
+  },
   "scripts": {
     "dev": "npm run docs",
     "docs": "cross-env NODE_ENV=development webpack-dev-server --hot --config ./build/docs.config.js",
