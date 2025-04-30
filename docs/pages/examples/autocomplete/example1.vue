@@ -14,7 +14,8 @@
       v-model="tag"
       :tags="tags"
       :autocomplete-items="filteredItems"
-      @tags-changed="newTags => (tags = newTags)" />
+      @tags-changed="newTags => (tags = newTags)"
+      :allow-white-space="true" />
     <el-code lang="html" :code="require('./example1.demo.html')" />
   </section>
 </template>

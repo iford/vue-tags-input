@@ -9,9 +9,9 @@
         :tags="tags"
         :autocomplete-items="items"
         :allow-edit-tags="true"
+        :allow-white-space="true"
         :placeholder="'Add a feature'"
-        @tags-changed="newTags => tags = newTags"
-      />
+        @tags-changed="newTags => (tags = newTags)" />
     </div>
     <h3>Browser support</h3>
     <div class="browser-support">
@@ -52,21 +52,23 @@
       License:
       <a href="https://opensource.org/licenses/MIT" target="_blank">MIT</a>
     </p>
-    <p class="date">Copyright (c) {{ new Date().getFullYear() }} Johannes Munari</p>
+    <p class="date">
+      Copyright (c) {{ new Date().getFullYear() }} Johannes Munari
+    </p>
   </div>
 </template>
 
 <script>
-import VueTagsInput from '@johmun/vue-tags-input';
-import Ie from '@components/icons/ie';
-import Safari from '@components/icons/safari';
-import Edge from '@components/icons/edge';
-import Chrome from '@components/icons/chrome';
-import Opera from '@components/icons/opera';
-import Firefox from '@components/icons/firefox';
+import VueTagsInput from "@johmun/vue-tags-input";
+import Ie from "@components/icons/ie";
+import Safari from "@components/icons/safari";
+import Edge from "@components/icons/edge";
+import Chrome from "@components/icons/chrome";
+import Opera from "@components/icons/opera";
+import Firefox from "@components/icons/firefox";
 
 export default {
-  name: 'ProjectFeatures',
+  name: "ProjectFeatures",
   components: {
     VueTagsInput,
     Ie,
@@ -78,35 +80,31 @@ export default {
   },
   data() {
     return {
-      tag: '',
+      tag: "",
       tags: [],
       features: [
-        'No dependencies',
-        'Custom validation rules',
-        'Hooks: Before adding, Before deleting ...',
-        'Edit tags after creation (click me)',
-        'Fast setup',
-        'Works with Vuex',
-        'Small size: 34kb minified (css included) | gzipped 9kb',
-        'Autocompletion',
-        'Customization options',
-        'Templating',
-        'Delete tags on backspace',
-        'Add tags on paste',
-        'Examples & Docs',
-        'More ...',
+        "No dependencies",
+        "Custom validation rules",
+        "Hooks: Before adding, Before deleting ...",
+        "Edit tags after creation (click me)",
+        "Fast setup",
+        "Works with Vuex",
+        "Small size: 34kb minified (css included) | gzipped 9kb",
+        "Autocompletion",
+        "Customization options",
+        "Templating",
+        "Delete tags on backspace",
+        "Add tags on paste",
+        "Examples & Docs",
+        "More ...",
       ],
-      todo: [
-        'Animation support',
-        'Autocomplete Highlighting',
-        'Groups',
-      ],
+      todo: ["Animation support", "Autocomplete Highlighting", "Groups"],
     };
   },
   computed: {
     items() {
       return this.todo
-        .filter(t => new RegExp(this.tag, 'i').test(t))
+        .filter(t => new RegExp(this.tag, "i").test(t))
         .map(i => {
           return { text: `Todo: ${i}` };
         });
@@ -119,7 +117,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~colors';
+@import "~colors";
 
 #app #project-features .tags-input {
   width: 100%;
@@ -135,14 +133,15 @@ export default {
     color: $darker;
   }
 
-  .ti-tag, .ti-item.ti-selected-item {
+  .ti-tag,
+  .ti-item.ti-selected-item {
     background-color: $primary;
     color: $darker;
   }
 
   .ti-tags li {
     padding: 5px 8px;
-    margin:2px;
+    margin: 2px;
   }
 
   .ti-tag.dark-font {
@@ -153,7 +152,7 @@ export default {
     padding: 2px 3px;
   }
 
-  .ti-tag.ti-deletion-mark  {
+  .ti-tag.ti-deletion-mark {
     background-color: $error !important;
     color: #fff;
   }
@@ -171,20 +170,20 @@ export default {
 </style>
 
 <style lang="scss" scoped>
-@import 'colors';
+@import "colors";
 
 .title {
   line-height: 28px;
   font-size: 23px;
   font-weight: bold;
-  font-family: 'Raleway', sans-serif;
+  font-family: "Raleway", sans-serif;
   color: #fff;
-  margin-bottom: 20px
+  margin-bottom: 20px;
 }
 
 .features {
   display: flex;
-  margin-bottom:40px;
+  margin-bottom: 40px;
   flex-direction: column;
 }
 

@@ -249,7 +249,14 @@ export default {
       if (typeof tag === "string") tags = this.createTagTexts(tag);
 
       // Filter out the tags with no content
-      tags = tags.filter(tag => tag.text.length > 0);
+
+      if (this.allowWhiteSpace) {
+        tags = tags.filter(tag => tag.text.length > 0);
+      } else {
+        tags = tags.filter(tag => tag.text.trim().length > 0);
+      }
+      console.log("---->tags", tags);
+      console.log("---->this.allowWhiteSpace", this.allowWhiteSpace);
 
       // The basic checks are done → try to add all tags
       tags.forEach(tag => {
@@ -331,7 +338,11 @@ export default {
         return;
 
       // If the tag has no content → stop
-      if (tag.text.trim().length === 0) return;
+      if (this.allowWhiteSpace) {
+        if (tag.text.length === 0) return;
+      } else {
+        if (tag.text.trim().length === 0) return;
+      }
 
       // The basic checks are done → try to save the tag
       if (!this["on-before-saving-tag"]) this.saveTag(index, tag);
